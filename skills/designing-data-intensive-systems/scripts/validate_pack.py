@@ -7,7 +7,7 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-PACKAGE = ROOT.parent
+PACKAGE = ROOT.parents[1]
 LINK = re.compile(r'(?<!!)\[[^\]]+\]\(([^)]+)\)')
 REFS = sorted((ROOT/'references').glob('*.md'))
 FILES = sorted(PACKAGE.rglob('*.md'))
@@ -30,7 +30,9 @@ desc = re.search(r'(?m)^description: (.+)$', intro)
 verify(bool(desc and desc.group(1).startswith('Use when')), 'model-facing trigger-first description')
 verify(bool(desc and len(desc.group(1)) < 500), 'description is concise')
 verify('disable-model-invocation' not in intro, 'single model-invoked entrypoint')
-verify(len(list(ROOT.rglob('SKILL.md'))) == 1, 'one skill rather than 13 context-heavy skills')
+verify(len(list((PACKAGE/'skills').rglob('SKILL.md'))) == 1, 'one skill rather than 13 context-heavy skills')
+verify(ROOT == PACKAGE/'skills'/'designing-data-intensive-systems', 'canonical skill path')
+verify((PACKAGE/'COMPATIBILITY.md').is_file(), 'agent compatibility guide present')
 verify(len(REFS) == 15, '13 topical modules plus dependency and decision references')
 for i in range(1,14):
     verify(len(list((ROOT/'references').glob(f'{i:02d}-*.md'))) == 1, f'module {i:02d} present')

@@ -38,3 +38,10 @@ The book's conceptual claims and trade-offs are the source. The routing mechanis
 3. Perform real application's integration, load, fault-injection and restore tests. Claims should identify exactly which were executed.
 
 This report intentionally distinguishes *full-source processing* from *independent agent behavior verification* and *production certification*.
+
+
+## Cross-agent distribution — 2026-10-26
+
+- Moved the canonical skill to `skills/designing-data-intensive-systems/` for the Skills CLI and the default Hermes GitHub tap format; kept all original cross-chapter content and relative reference paths.
+- Documented Claude Code, Codex and Hermes Agent discovery, native Hermes GitHub installation, and NPX/NPM commands in `COMPATIBILITY.md`.
+- Added offline directory-copy tests and an npm-dependent GitHub Actions installation smoke test. Neither qualifies as a live model-behavior evaluation.

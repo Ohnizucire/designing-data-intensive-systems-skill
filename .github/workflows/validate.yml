@@ -1,0 +1,36 @@
+name: Verify agent skill and installer compatibility
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  static:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 skills/designing-data-intensive-systems/scripts/validate_pack.py
+      - run: python3 tests/check_install_layout.py
+
+  npx-install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Discover skill through Skills CLI
+        run: |
+          npx --yes skills add "$GITHUB_WORKSPACE" --list | tee "$RUNNER_TEMP/list.txt"
+          grep -q designing-data-intensive-systems "$RUNNER_TEMP/list.txt"
+      - name: Install for Claude Code, Codex and Hermes
+        run: |
+          mkdir -p "$RUNNER_TEMP/demo"
+          cd "$RUNNER_TEMP/demo"
+          npx --yes skills add "$GITHUB_WORKSPACE" -a claude-code -a codex -a hermes-agent -y --copy
+          test -f .claude/skills/designing-data-intensive-systems/SKILL.md
+          test -f .agents/skills/designing-data-intensive-systems/SKILL.md
+          test -f .hermes/skills/designing-data-intensive-systems/SKILL.md

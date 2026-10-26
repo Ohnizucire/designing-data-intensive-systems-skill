@@ -16,19 +16,45 @@ Inspired by the **complete second edition** of *Designing Data-Intensive Applica
 6. Verify invariants through tests, concurrency/fault scenarios, migrations, and recovery checks as applicable.
 7. Report decisions, evidence, unknowns, rollback plans, and measurable redesign triggers.
 
-Each step has an observable **Done** criterion in [`SKILL.md`](designing-data-intensive-systems/SKILL.md). The skill adds data-engineering judgment; it does not replace your agent's coding, TDD, review, or debugging workflows.
+Each step has an observable **Done** criterion in [`SKILL.md`](skills/designing-data-intensive-systems/SKILL.md). The skill adds data-engineering judgment; it does not replace your agent's coding, TDD, review, or debugging workflows.
 
-## Install
+## Installation — NPX / NPM
 
-Copy the skill folder into your agent's discoverable skills directory. For agents supporting the common `~/.agents/skills/` location:
+The [open-source Skills CLI](https://github.com/vercel-labs/skills) supports Claude Code, OpenAI Codex and Hermes Agent. It installs directly from this GitHub repository: **no separate npm package or npm registry publication is needed**. Requires Node.js/npm.
 
-```bash
-git clone https://github.com/Ohnizucire/designing-data-intensive-systems-skill.git
-mkdir -p ~/.agents/skills
-cp -r designing-data-intensive-systems-skill/designing-data-intensive-systems ~/.agents/skills/
-```
+Globally install to all three:
 
-Other agents may use different skill directories. For **Hermes Agent**, enable its skills toolset, configure the skill location according to your Hermes installation, and optionally invoke `skill_view("designing-data-intensive-systems")`.
+~~~bash
+npx skills add Ohnizucire/designing-data-intensive-systems-skill -g -a claude-code -a codex -a hermes-agent -y
+~~~
+
+Equivalent npm command:
+
+~~~bash
+npm exec --yes -- skills add Ohnizucire/designing-data-intensive-systems-skill -g -a claude-code -a codex -a hermes-agent -y
+~~~
+
+Install for the **current project** by omitting `-g`. Install for only one agent by specifying its `-a` argument alone. Use `--copy` to request copies instead of symlinks. List available skills without installing:
+
+~~~bash
+npx skills add Ohnizucire/designing-data-intensive-systems-skill --list
+~~~
+
+### Hermes native installation (no Node.js)
+
+~~~bash
+hermes skills install Ohnizucire/designing-data-intensive-systems-skill/skills/designing-data-intensive-systems
+hermes skills list
+~~~
+
+The same repository works as a Hermes tap with the default `skills/` source directory:
+
+~~~bash
+hermes skills tap add Ohnizucire/designing-data-intensive-systems-skill
+hermes skills search designing-data-intensive-systems
+~~~
+
+For project-local Hermes skills, run `hermes skills trust` from within that repository before use; global skills do not require project trust. See [Cross-agent compatibility](COMPATIBILITY.md) for documented paths, verification and caveats.
 
 ### Example prompt
 
@@ -43,14 +69,15 @@ requirements, and show which invariants are verified versus untested.
 
 | Path | Purpose |
 | --- | --- |
-| [`designing-data-intensive-systems/SKILL.md`](designing-data-intensive-systems/SKILL.md) | Model-invoked entrypoint, procedure, and conditional routing |
-| [`references/`](designing-data-intensive-systems/references/) | 13 topic modules, cross-chapter dependencies, and a decision record |
-| [`provenance/whole-book-map.md`](designing-data-intensive-systems/provenance/whole-book-map.md) | Conceptual connections across the 14 chapters |
-| [`provenance/section-ledger.md`](designing-data-intensive-systems/provenance/section-ledger.md) | Section-level source coverage index |
-| [`examples/`](designing-data-intensive-systems/examples/) | Applied architecture example |
-| [`tests/agent-scenarios.md`](designing-data-intensive-systems/tests/agent-scenarios.md) | 20 proposed agent behavior evaluation scenarios |
-| [`scripts/validate_pack.py`](designing-data-intensive-systems/scripts/validate_pack.py) | Static structural validation |
+| [`skills/designing-data-intensive-systems/SKILL.md`](skills/designing-data-intensive-systems/SKILL.md) | Model-invoked entrypoint, procedure, and conditional routing |
+| [`references/`](skills/designing-data-intensive-systems/references/) | 13 topic modules, cross-chapter dependencies, and a decision record |
+| [`provenance/whole-book-map.md`](skills/designing-data-intensive-systems/provenance/whole-book-map.md) | Conceptual connections across the 14 chapters |
+| [`provenance/section-ledger.md`](skills/designing-data-intensive-systems/provenance/section-ledger.md) | Section-level source coverage index |
+| [`examples/`](skills/designing-data-intensive-systems/examples/) | Applied architecture example |
+| [`tests/agent-scenarios.md`](skills/designing-data-intensive-systems/tests/agent-scenarios.md) | 20 proposed agent behavior evaluation scenarios |
+| [`scripts/validate_pack.py`](skills/designing-data-intensive-systems/scripts/validate_pack.py) | Static structural validation |
 | [`AUDIT.md`](AUDIT.md) | Source, writing-standard, and verification limitations |
+| [`COMPATIBILITY.md`](COMPATIBILITY.md) | Supported agents, installation and verification |
 
 The 13 modules cover workload trade-offs; modeling; storage and retrieval; schema evolution; replication and local-first design; sharding; transactions; partial failures; consistency and consensus; batch processing; streams and CDC; end-to-end data correctness; and ethics and data rights.
 
@@ -60,7 +87,7 @@ The 13 modules cover workload trade-offs; modeling; storage and retrieval; schem
 python3 designing-data-intensive-systems/scripts/validate_pack.py
 ```
 
-The static validator checks routing, coverage, references, and declared test scenarios. **Passing it does not demonstrate that an agent follows the instructions correctly.** Run the scenarios in [`tests/agent-scenarios.md`](designing-data-intensive-systems/tests/agent-scenarios.md) in fresh agent contexts, with and without the skill, before making behavioral quality claims. Validate each real system independently.
+Run `python3 tests/check_install_layout.py` for offline simulated installs. GitHub Actions also checks actual NPX CLI installation. The static validator checks routing, coverage, references, and declared test scenarios. **Passing it does not demonstrate that an agent follows the instructions correctly.** Run the scenarios in [`tests/agent-scenarios.md`](skills/designing-data-intensive-systems/tests/agent-scenarios.md) in fresh agent contexts, with and without the skill, before making behavioral quality claims. Validate each real system independently.
 
 ## Design standards and attribution
 
